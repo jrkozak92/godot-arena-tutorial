@@ -40,6 +40,7 @@ func _physics_process(delta):
 	velocity.x = direction.x * SPEED
 	velocity.z = direction.z * SPEED
 	
+	
 	velocity.y -= 20.0 * delta
 	
 	if Input.is_action_just_pressed("jump") and is_on_floor():
@@ -61,4 +62,4 @@ func shoot_bullet():
 	new_bullet.global_transform = %Marker3D.global_transform
 	
 	%Timer.start()
-	
+	%AudioStreamPlayer.play()

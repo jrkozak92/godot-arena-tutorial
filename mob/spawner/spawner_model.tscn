@@ -1,0 +1,79 @@
+[gd_scene load_steps=10 format=3 uid="uid://bpjyr1233gvb"]
+
+[ext_resource type="PackedScene" uid="uid://dpxlf3xp2t64n" path="res://mob/spawner/spawner_model.glb" id="1_bk78j"]
+[ext_resource type="Shader" uid="uid://cfnwyva3u4qeb" path="res://mob/spawner/spawner_halo.gdshader" id="2_lvlhh"]
+[ext_resource type="Material" uid="uid://jvnbftghahty" path="res://mob/spawner/spawner_screen_material.tres" id="3_p6j4b"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_rug3p"]
+render_priority = 0
+shader = ExtResource("2_lvlhh")
+shader_parameter/color = Color(0, 0.677215, 0.613538, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_2xi82"]
+albedo_color = Color(1, 0.229687, 0.624549, 1)
+metallic = 0.5
+metallic_specular = 1.0
+roughness = 0.3
+rim_enabled = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_bk78j"]
+albedo_color = Color(0.817521, 0.817521, 0.817521, 1)
+metallic = 0.8
+roughness = 0.0
+rim_enabled = true
+
+[sub_resource type="Animation" id="Animation_bk78j"]
+resource_name = "rotate"
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Top:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(0, 0, 0), Vector3(0, 6.28319, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_lvlhh"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Top:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, 0, 0)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_p6j4b"]
+_data = {
+&"RESET": SubResource("Animation_lvlhh"),
+&"rotate": SubResource("Animation_bk78j")
+}
+
+[node name="spawner_model" instance=ExtResource("1_bk78j")]
+
+[node name="halo" parent="." index="0"]
+material_override = SubResource("ShaderMaterial_rug3p")
+
+[node name="Body" parent="." index="1"]
+surface_material_override/0 = SubResource("StandardMaterial3D_2xi82")
+surface_material_override/1 = ExtResource("3_p6j4b")
+
+[node name="Top" parent="." index="2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.783957, 0)
+surface_material_override/0 = SubResource("StandardMaterial3D_bk78j")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." index="3"]
+libraries = {
+&"": SubResource("AnimationLibrary_p6j4b")
+}
+autoplay = "rotate"

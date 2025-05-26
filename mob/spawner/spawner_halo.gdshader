@@ -13,5 +13,5 @@ void fragment() {
 	ALBEDO = color;
 	EMISSION = color * 2.0;
 	ALPHA = step(UV.y, wave) * (1.0 - UV.y) * (1.0 - f);
-	
+
 }

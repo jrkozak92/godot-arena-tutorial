@@ -1,9 +1,17 @@
-[gd_scene load_steps=7 format=3 uid="uid://dfnefcjucylvr"]
+[gd_scene load_steps=10 format=3 uid="uid://dfnefcjucylvr"]
 
 [ext_resource type="Texture2D" uid="uid://blvlvx1cvvfaf" path="res://level/checkboard.png" id="1_hfkki"]
+[ext_resource type="Script" uid="uid://bgw1xqeqyux2m" path="res://level/game.gd" id="1_to0a4"]
 [ext_resource type="PackedScene" uid="uid://dcjep4wba0s6c" path="res://player/player.tscn" id="1_vu7ft"]
 [ext_resource type="Material" uid="uid://bep0wp63ouu2p" path="res://level/bridge_magenta.tres" id="2_bk1rt"]
-[ext_resource type="PackedScene" uid="uid://r2b6fo3c4jru" path="res://mob/mob.tscn" id="4_hjeur"]
+[ext_resource type="PackedScene" uid="uid://bw28brhlgm1vk" path="res://mob/spawner/mob_spawner_3d.tscn" id="5_l5ub2"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_l5ub2"]
+font_size = 64
+outline_size = 1
+outline_color = Color(0, 0, 0, 1)
+
+[sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_l5ub2"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_bk1rt"]
 albedo_color = Color(0.993505, 0.451881, 3.08037e-06, 1)
@@ -22,6 +30,36 @@ fog_height = 0.5
 fog_height_density = 0.285
 
 [node name="Game" type="Node3D"]
+script = ExtResource("1_to0a4")
+
+[node name="Player" parent="." instance=ExtResource("1_vu7ft")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 0, 4)
+
+[node name="MobSpawner3D" parent="." instance=ExtResource("5_l5ub2")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0, -20)
+
+[node name="MobSpawner3D2" parent="." instance=ExtResource("5_l5ub2")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 0, 4)
+
+[node name="MobSpawner3D3" parent="." instance=ExtResource("5_l5ub2")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 1, -8)
+
+[node name="Score" type="Label" parent="."]
+unique_name_in_owner = true
+offset_left = 23.0
+offset_top = 18.0
+offset_right = 446.0
+offset_bottom = 118.0
+text = "Score: 0"
+label_settings = SubResource("LabelSettings_l5ub2")
+
+[node name="KillPlane" type="Area3D" parent="."]
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="KillPlane"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -4, 0)
+shape = SubResource("WorldBoundaryShape3D_l5ub2")
 
 [node name="CSGBox3D" type="CSGBox3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -5, 0)
@@ -120,9 +158,6 @@ use_collision = true
 size = Vector3(14, 4, 17)
 material = SubResource("StandardMaterial3D_bk1rt")
 
-[node name="Player" parent="." instance=ExtResource("1_vu7ft")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 0, 4)
-
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.349144, 0.933013, -0.0870969, -0.482963, 0.258819, 0.836516, 0.803023, -0.25, 0.540976, -48, 35, 0)
 shadow_enabled = true
@@ -130,5 +165,7 @@ shadow_enabled = true
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_vu7ft")
 
-[node name="Mob" parent="." instance=ExtResource("4_hjeur")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 1.73702, 1)
+[connection signal="mob_spawned" from="MobSpawner3D" to="." method="_on_mob_spawner_3d_mob_spawned"]
+[connection signal="mob_spawned" from="MobSpawner3D2" to="." method="_on_mob_spawner_3d_mob_spawned"]
+[connection signal="mob_spawned" from="MobSpawner3D3" to="." method="_on_mob_spawner_3d_mob_spawned"]
+[connection signal="body_entered" from="KillPlane" to="." method="_on_kill_plane_body_entered"]
